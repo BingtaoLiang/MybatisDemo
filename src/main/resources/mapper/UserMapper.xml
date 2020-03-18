@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper:根标签，namespace：命名空间，随便写，一般保证命名空间唯一 -->
+<mapper namespace="com.test.mybatis.mapper.UserMapper">
+
+    <!--结果集映射-->
+    <resultMap id="UserMap" type="User">
+        <!--column是数据库中的字段，property是实体类中的属性-->
+<!--        <result column="id" property="id"/>-->
+<!--        <result column="name" property="name"/>-->
+<!--        <result column="age" property="age"/>-->
+        <result column="password" property="pwd"/>
+    </resultMap>
+
+    <!-- id就是namespace中的方法名；resultTy就是sql语句执行的返回值；parameterType是参数类型-->
+    <select id="getUserList" resultType="user">
+        select * from user
+    </select>
+
+    <select id="getUserById" resultMap="UserMap" >
+        select * from user where id = #{id}
+    </select>
+
+
+    <insert id="addUser" parameterType="user">
+        insert into user (name, age, password) values (#{name}, #{age}, #{pwd});
+    </insert>
+
+
+    <update id="updateUser" parameterType="user">
+        update user
+        set name = #{name},age = #{age},password = #{password} where id = #{id};
+    </update>
+
+    <delete id="deleteUser" parameterType="int">
+        delete from user where id = #{id}
+    </delete>
+
+</mapper>

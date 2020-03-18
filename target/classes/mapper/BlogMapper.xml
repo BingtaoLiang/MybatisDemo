@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper:根标签，namespace：命名空间，随便写，一般保证命名空间唯一 -->
+<mapper namespace="com.test.mybatis.mapper.BlogMapper">
+
+    <insert id="addBlog" parameterType="blog">
+        insert into mybatis.blog (id, title, author, create_time, views)
+        values (#{id}, #{title}, #{author}, #{createTime}, #{views});
+    </insert>
+
+    <select id="queryBlogIF1" parameterType="map" resultType="blog">
+        select * from blog where
+        <if test="title != null">
+            title = #{title}
+        </if>
+        <if test="author != null">
+            and author = #{author}
+        </if>
+    </select>
+
+    <select id="queryBlogIF2" parameterType="map" resultType="blog">
+        select * from blog
+        <where>
+            <!--            <if test="title!=null">-->
+            <!--                title = #{title}-->
+            <!--            </if>-->
+            <!--            <if test="author != null">-->
+            <!--                and author = #{author}-->
+            <!--            </if>-->
+            <include refid="if-title-author"></include>
+        </where>
+    </select>
+
+    <!-- sql片段最好基于单表定义，尽量不要包含where标签-->
+    <sql id="if-title-author">
+        <if test="title!=null">
+            title = #{title}
+        </if>
+        <if test="author != null">
+            and author = #{author}
+        </if>
+    </sql>
+
+    <select id="queryBlogChoose" resultType="blog" parameterType="map">
+        select * from blog
+        <where>
+            <choose>
+                <when test="title != null">
+                    title = #{title}
+                </when>
+                <when test="author != null">
+                    and author = #{author}
+                </when>
+                <otherwise>
+                    and views = #{views}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <update id="updateBlog" parameterType="map">
+        update blog
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="author != null">
+                author = #{author},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="queryBlogForeach" parameterType="map" resultType="blog">
+        select * from blog
+        <where>
+            <foreach collection="ids" item="id" open="(" close=")" separator="or">
+                id=#{id}
+            </foreach>
+        </where>
+    </select>
+</mapper>

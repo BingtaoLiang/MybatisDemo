@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.mybatis.mapper.ClassesMapper">
+
+    <!-- 自定义结果映射 -->
+    <resultMap type="Classes" id="ClassesWithTeacherResult">
+        <id property="cid" column="cid"/>
+        <result property="cname" column="cname"/>
+        <!-- 多表关联映射 -->
+        <collection property="teachers" ofType="Teacher" >
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="findClassesWihTeacher" parameterType="Integer" resultMap="ClassesWithTeacherResult">
+		select * from classes c,teacher t,classesteacher ct
+		where ct.cid=c.cid
+		and ct.tid=t.id
+		and c.cid=#{cid}
+	</select>
+
+
+
+    <resultMap type="Classes" id="findAllResult">
+        <id property="cid" column="cid"/>
+        <result property="cname" column="cname"/>
+        <!-- 多表关联映射 -->
+        <collection property="teachers" ofType="Teacher" >
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAll" parameterType="Integer" resultMap="findAllResult">
+        select * from classes c,teacher t,classesteacher ct
+        where ct.cid=c.cid
+          and ct.tid=t.id
+    </select>
+</mapper>
